@@ -1,0 +1,19 @@
+{
+  "name": "digitalclaim/scale-api-php",
+  "authors": [
+    {
+      "name": "Milo Tischler",
+      "email": "milo.tischler@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DigitalClaim\\Scale\\": "src/"
+    }
+  },
+  "require": {
+    "illuminate/support": ">=5.6",
+    "illuminate/http": ">=5.6",
+    "illuminate/cache": ">=5.6"
+  }
+}
