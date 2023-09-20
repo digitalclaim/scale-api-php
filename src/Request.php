@@ -3,9 +3,9 @@
 namespace DigitalClaim\Scale;
 
 use DigitalClaim\Scale\Auth;
+use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
 
 class Request
 {
@@ -30,11 +30,17 @@ class Request
     protected static $retries = 0;
 
     /**
+     * @var
+     */
+    protected $http;
+
+    /**
      *
      */
     public function __construct(?Auth $auth = null)
     {
         $this->auth = $auth ?? new Auth;
+        $this->http = new Factory();
     }
 
     /**
@@ -43,18 +49,11 @@ class Request
      */
     public function get(string $path): Response
     {
-        // \Log::info('Send get request:', [
-        //     'path'          => $path,
-        //     'url'           => $this->auth->getUrl(),
-        //     'client_id'     => $this->auth->getClientId(),
-        //     'client_secret' => $this->auth->getClientSecret(),
-        // ]);
-
         if (!$this->auth->hasToken($this->auth->getClientId())) {
             $this->refreshToken();
         }
 
-        $response = Http::withOptions([
+        $response = $this->http->withOptions([
             'debug'  => $this->debug,
             'verify' => $this->verify,
             // 'delay'  => rand(0, 1000)
@@ -74,21 +73,11 @@ class Request
      */
     public function post(string $path, array $data): Response
     {
-        // \Log::info('Send post request:', [
-        //     'path'          => $path,
-        //     'url'           => $this->auth->getUrl(),
-        //     'client_id'     => $this->auth->getClientId(),
-        //     'client_secret' => $this->auth->getClientSecret(),
-        //     'data'          => $data
-        // ]);
-
-        // \Log::info('The post data: ' . print_r($data, true));
-
         if (!$this->auth->hasToken($this->auth->getClientId())) {
             $this->refreshToken();
         }
 
-        $response = Http::withOptions([
+        $response = $this->http->withOptions([
             'debug'  => $this->debug,
             'verify' => $this->verify,
         ])->withHeaders([
@@ -106,7 +95,7 @@ class Request
      */
     protected function refreshToken(): void
     {
-        $response = Http::withOptions([
+        $response = $this->http->withOptions([
             'debug'  => $this->debug,
             'verify' => $this->verify,
         ])->post($this->joinPath($this->auth->getUrl(), '/token'), [
@@ -117,15 +106,13 @@ class Request
 
         $response = $this->processResponse($response);
 
-        \Log::info("Response", ['response' => $response->json()]);
-
         $this->auth->setToken($this->auth->getClientId(), Arr::get($response->json(), 'data.token'));
     }
 
     /**
      * @return Illuminate\Http\Client\Response
      */
-    protected function processResponse(Response $response, ?callable $replay = null): Response
+    protected function processResponse(Response $response,  ? callable $replay = null) : Response
     {
         if ($response->failed()) {
             if ($response->status() === 401 && Arr::get($response->json(), 'message') === 'Unauthenticated.') {
