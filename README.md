@@ -1,2 +1,3 @@
 # scale-api-php
-PHP library for Argus.scale
+
+PHP library for ARGUS.scale
