@@ -16,12 +16,16 @@ $repository = new Document('claims-8d60484b-aef1-45f0-b7da-5028cde54520-16624728
 
 $data = $repository->paginate(1, [
     'data' => [],
-], 5)->json();
+], 1)->json();
 
 print_r($data);
 
 $data = $repository->paginate(2, [
     'data' => [],
-], 5)->json();
+], 1)->json();
+
+print_r($data);
+
+$data = $repository->getFileMeta('63175286c48ad845421d0d52', 'dbfe582a-d6a1-48c4-bf5b-9a356a3d00ff-1683127009')->json();
 
 print_r($data);

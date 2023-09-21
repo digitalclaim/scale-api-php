@@ -1,3 +1,4 @@
 vendor
-composer.lock
 src/cache
+composer.lock
+composer.phar
