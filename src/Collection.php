@@ -6,7 +6,7 @@ use DigitalClaim\Scale\Auth;
 use DigitalClaim\Scale\Client;
 use DigitalClaim\Scale\Response;
 
-class Document
+class Collection
 {
     /**
      * @var DigitalClaim\Scale\Client
@@ -16,18 +16,18 @@ class Document
     /**
      * @var String
      */
-    protected $collectionUid;
+    protected $uid;
 
     /**
      *
      */
     public function __construct(
-        ?String $collectionUid = null,
-        ?Auth $auth = null,
+        String $uid,
+        Auth $auth,
         array $options = ['verify' => false, 'debug' => false]
     ) {
-        $this->client        = new Client($auth, $options);
-        $this->collectionUid = $collectionUid;
+        $this->client = new Client($auth, $options);
+        $this->uid    = $uid;
     }
 
     /**
@@ -37,7 +37,7 @@ class Document
      */
     public function get(string $uid, array $data): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/get/$uid", $data);
+        return $this->client->post("/collection/{$this->uid}/document/get/$uid", $data);
     }
 
     /**
@@ -47,7 +47,7 @@ class Document
      */
     public function create(array $data): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/create", $data);
+        return $this->client->post("/collection/{$this->uid}/document/create", $data);
     }
 
     /**
@@ -57,7 +57,7 @@ class Document
      */
     public function delete(string $uid, bool $softdelete = false): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/delete/$uid", [
+        return $this->client->post("/collection/{$this->uid}/document/delete/$uid", [
             'data' => [
                 'softdelete' => $softdelete,
             ],
@@ -71,7 +71,7 @@ class Document
      */
     public function update(string $uid, array $data): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/update/$uid", $data);
+        return $this->client->post("/collection/{$this->uid}/document/update/$uid", $data);
     }
 
     /**
@@ -81,7 +81,7 @@ class Document
      */
     public function paginate(string $page, array $data, int $size = 20): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/paginate/$page/$size", $data);
+        return $this->client->post("/collection/{$this->uid}/document/paginate/$page/$size", $data);
     }
 
     /**
@@ -91,7 +91,7 @@ class Document
      */
     public function push(string $path, $item, bool $unique, array $filter = [])
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/push", [
+        return $this->client->post("/collection/{$this->uid}/document/push", [
             'data' => [
                 'path'   => $path,
                 'item'   => $item,
@@ -108,7 +108,7 @@ class Document
      */
     public function aggregate(array $aggregation, array $filter = []): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/aggregate", [
+        return $this->client->post("/collection/{$this->uid}/document/aggregate", [
             'data' => [
                 'aggregation' => $aggregation,
                 'filter'      => $filter,
@@ -123,7 +123,7 @@ class Document
      */
     public function getFile(string $documentUid, string $fileUid): Response
     {
-        return $this->client->get("/collection/{$this->collectionUid}/document/$documentUid/file/get/$fileUid");
+        return $this->client->get("/collection/{$this->uid}/document/$documentUid/file/get/$fileUid");
     }
 
     /**
@@ -133,7 +133,7 @@ class Document
      */
     public function getFileMeta(string $documentUid, string $fileUid): Response
     {
-        return $this->client->get("/collection/{$this->collectionUid}/document/$documentUid/file/get/$fileUid/meta");
+        return $this->client->get("/collection/{$this->uid}/document/$documentUid/file/get/$fileUid/meta");
     }
 
     /**
@@ -143,7 +143,7 @@ class Document
      */
     public function updateFile(string $documentUid, string $fileUid, string $name, array $meta): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/$documentUid/file/update/$fileUid", [
+        return $this->client->post("/collection/{$this->uid}/document/$documentUid/file/update/$fileUid", [
             'data' => [
                 'name' => $name,
                 'meta' => $meta,
@@ -158,7 +158,7 @@ class Document
      */
     public function deleteFile(string $documentUid, string $fileUid): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/$documentUid/file/delete/$fileUid", []);
+        return $this->client->post("/collection/{$this->uid}/document/$documentUid/file/delete/$fileUid", []);
     }
 
     /**
@@ -168,7 +168,7 @@ class Document
      */
     public function putFile(string $documentUid, string $name, string $payload, array $meta = []): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/$documentUid/file/create", [
+        return $this->client->post("/collection/{$this->uid}/document/$documentUid/file/create", [
             'data' => [
                 'name'    => $name,
                 'meta'    => $meta,
@@ -184,7 +184,7 @@ class Document
      */
     public function getSignedUrlToReadFile(string $documentUid, string $fileUid, string $mime = 'application/octet-stream'): Response
     {
-        return $this->client->get("/collection/{$this->collectionUid}/document/$documentUid/file/sign/$fileUid?mime=" . urlencode($mime));
+        return $this->client->get("/collection/{$this->uid}/document/$documentUid/file/sign/$fileUid?mime=" . urlencode($mime));
     }
 
     /**
@@ -194,7 +194,7 @@ class Document
      */
     public function getSignedUrlToPutFile(string $documentUid, string $name, array $meta = [], string $mime = 'application/octet-stream'): Response
     {
-        return $this->client->post("/collection/{$this->collectionUid}/document/$documentUid/file/sign", [
+        return $this->client->post("/collection/{$this->uid}/document/$documentUid/file/sign", [
             'data' => [
                 'name' => $name,
                 'meta' => $meta,
