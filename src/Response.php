@@ -199,15 +199,12 @@ class Response
     /**
      * Throw an exception if a server or client error occurred.
      *
-     * @param  \Closure|null  $callback
-     * @return $this
-     *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws \Exception
      */
     public function throw(): void
     {
-        $message = "HTTP request returned status code {$response->status()}";
-        $summary = Message::bodySummary($response->toPsrResponse());
+        $message = "HTTP request returned status code {$this->status()}";
+        $summary = Message::bodySummary($this->toPsrResponse());
 
         throw new Exception(is_null($summary) ? $message : $message .= ":\n{$summary}\n");
     }
