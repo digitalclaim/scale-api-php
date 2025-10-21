@@ -4,6 +4,7 @@ namespace DigitalClaim\Scale;
 
 use GuzzleHttp\Psr7\Message;
 use Psr\Http\Message\MessageInterface;
+use Exception;
 
 class Response
 {
@@ -240,5 +241,4 @@ class Response
     {
         return $this->body();
     }
-
 }

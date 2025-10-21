@@ -10,7 +10,7 @@ PHP library for ARGUS.scale
 require_once __DIR__ . '/vendor/autoload.php';
 
 use DigitalClaim\Scale\Auth;
-use DigitalClaim\Scale\Document;
+use DigitalClaim\Scale\Collection;
 
 $auth = new Auth(
     'CLIENT_URL',
@@ -19,7 +19,7 @@ $auth = new Auth(
     'test'
 );
 
-$repository = new Document('SOME_DOCUMENT_COLLECTION', $auth);
+$repository = new Collection('SOME_DOCUMENT_COLLECTION', $auth);
 
 $data = $repository->paginate(1, [
     'data' => [],
